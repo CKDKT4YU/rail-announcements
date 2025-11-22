@@ -34,33 +34,59 @@ The folder for audio files can be found at `audio/`.
     the National Rail Journey Planner.
   - _For example, Brighton should be `BTN.mp3`._
 
-### Running the website locally
+### Running the website locally (simple Mac instructions)
 
-You'll need to install [Node.js](https://nodejs.org/en) and the [Yarn package manager](https://yarnpkg.com/getting-started/install) as
-prerequisites.
+These steps are written for a current macOS (tested November 2024) and assume only basic command-line knowledge.
 
-When you've cloned the repository, install the required dependencies with Yarn:
+#### 1) One-time prep
+
+1. Install [Node.js 18 or newer](https://nodejs.org/en) (the standard macOS installer is fine).
+2. Open Terminal and run:
+
+   ```bash
+   corepack enable
+   ```
+
+   This makes sure the repo’s bundled Yarn **4.3.1** is used automatically. You do **not** need to uninstall any other Yarn versions you may have tried.
+
+#### 2) If you tried before and it failed
+
+If a previous install attempt errored (for example, with a different Yarn version), clean the workspace before retrying:
+
+```bash
+rm -rf .yarn/cache node_modules .pnp.*
+git checkout -- .
+git clean -fd
+```
+
+#### 3) Install dependencies
+
+From the repository root:
 
 ```bash
 yarn install
 ```
 
-Then you can start the three (yes, three) development services:
+#### 4) Start the app (three small servers)
+
+Use three Terminal windows or tabs, all in the repo folder:
 
 ```bash
-# In one terminal, run (for the website):
+# Tab 1 – website
 yarn run develop
 
-# When this says "You can now view rail-announcements in the browser.", open a new terminal and run (for the live trains API):
+# Tab 2 – API/worker proxy (wait for Tab 1 to say the site is ready first)
 yarn run develop:workers
 
-# Finally, open a new terminal and run (to serve the audio files):
+# Tab 3 – audio files
 yarn run serve-audio
 ```
 
-You'll be able to access the website at [http://local.davw.network:8787](http://local.davw.network:8787). `local.davw.network` is a domain that
-will always resolve to your local machine, and is used to ensure that the website works correctly with the audio files and backend API during
-local development.
+When all three are running, open [http://local.davw.network:8787](http://local.davw.network:8787). The custom hostname maps to localhost so audio and API calls work correctly during development.
+
+#### 5) Do you need API keys?
+
+No. The site’s live data requests hit the public `national-rail-api.davwheat.dev` endpoints, and local development uses the built-in Cloudflare Workers dev server with the bundled D1 database binding. You don’t need to supply any API keys or secrets for a local setup.
 
 ### Website contributions
 
